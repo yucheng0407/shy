@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="/test/medias/js/baseJs/load/load.js"></script>
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+    </style>
+    <script type="text/javascript">
+        loadCss()
+    </script>
+</head>
+<body>
+<div id="index">
+    <div class="top">
+        <div class="logo">
+            <i class="iconfont" style="font-size: 25px"> &#xe790;</i><span>余程小屋{{Math.floor(Math.random()*10)}}</span>
+        </div>
+        <ul v-if="menus&&menus.length>0">
+            <li
+                    v-for="menu in menus">
+                <a :title="menu.name" :class="{topselcet:curData.compMenu.name==menu.name}" href="javascript:void(0)"
+                   @click="goTo(menu)"><i v-if="menu.icon" class="iconfont" v-html="menu.icon"></i><span
+                        v-else="menu.name" class="xx" v-text="menu.name"></span></a>
+                <div v-if="menu.subMenus&&menu.subMenus.length>0" class="subMenus">
+                    <component :style-data="styleData" :p-cur-data.sync="curData" :comp-menu="menu"
+                               is="menuComp"></component>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="body">
+        <div  class="leftMenu"
+             v-if="curData.compMenu.subMenus&&curData.compMenu.subMenus.length>0" :style="leftMenuStyle">
+            <component :style-data="styleData" :p-cur-data.sync="curData" :comp-menu="curData.compMenu"
+                       is="menuComp"></component>
+        </div>
+        <div  class="rightBody"
+             :style="curData.compMenu.subMenus&&curData.compMenu.subMenus.length>0?rightBodyStyle:{width:'100%'}">
+            <div class="toggle " v-if="curData.compMenu.subMenus&&curData.compMenu.subMenus.length>0">
+                <a @click="styleData.isAnimate=true;styleData.isLeftMenuShow=!styleData.isLeftMenuShow"><i
+                        class="iconfont" v-html="styleData.isLeftMenuShow?'&#xe74f;':'&#xe70c;'"></i></a>
+            </div>
+            <component is="frameComp" :style-data="styleData" :p-cur-data="curData" :url="curData.curMenu.url"
+                       :title="curData.curMenu.name"></component>
+        </div>
+    </div>
+</div>
+<template id="menuComp">
+    <ul class="menuComp">
+        <li v-for="menu in compMenu.subMenus">
+            <a :class="{topselcet1:pCurData.curMenu.name==menu.name}" href="javascript:void(0)"
+               @click="updateP(menu,compMenu)"><i v-if="menu.icon" class="iconfont" v-html="menu.icon"></i><span
+                    style="vertical-align: middle;" v-text="menu.name"></span></a>
+        </li>
+    </ul>
+</template>
+<template id="frameComp">
+    <div class="frameComp">
+        <div class="frameList">
+            <ul>
+                <li :class="{select:curframe==frame}" v-for="(frame,index) in frames">
+                    <a style="display:block"
+                       @click="updateP(frame)"><span>{{frame.title}}</span><i class="iconfont"
+                                                                              @click.stop="close(index)">&#xe6f3;</i></a>
+                </li>
+            </ul>
+        </div>
+        <iframe class="menuFrame" style="border-right: 1px solid #d8d8d8;border-left: 1px solid #d8d8d8;" v-show="curframe==frame" v-for="frame in frames" name="index"
+                frameborder="0" width="100%"
+                :height="height"
+                scrolling="auto"
+                :src="frame.url"></iframe>
+    </div>
+</template>
+<script>
+    loadJs({
+        modules: ["/medias/js/template/menu.js"]
+    });
+    $(".body").height($("body").height() - $(".top").height());
+</script>
+<!--<script type="text/javascript" src="medias/js/template/menu.js"></script>-->
+</body>
+</html>

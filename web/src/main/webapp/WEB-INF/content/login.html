@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="${rq.contextPath}/medias/js/baseJs/load/load.js"></script>
+    <title>Title</title>
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .login {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            background-image: url("medias/css/demo-2-bg.jpg");
+        }
+
+        .login div {
+            width: 300px;
+            margin: auto;
+            z-index: 9999999;
+        }
+
+        .login li {
+            margin: 10px 0;
+        }
+    </style>
+    <script type="text/javascript">
+        loadCss({modules: ["component"]})
+    </script>
+</head>
+<body>
+<div class="login">
+    <canvas style="position: absolute" id="demo-canvas">
+    </canvas>
+    <div>
+        <ul>
+            <li>
+                <input class="input" v-model="userName">
+            </li>
+            <li>
+                <input class="input" v-model="passWord">
+            </li>
+            <li style="display: flex">
+                <input style="width: 60%" class="input">
+                <div style="width: 40%;">21321</div>
+            </li>
+            <li>
+                <button style="margin: 0;width: 100%" class="button" @click="login"><span>登入</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+    loadJs({
+        modules: ["/medias/js/baseJs/background/demo-2.js"]
+    });
+    var vue = new Vue({
+            el: '.login',
+            data: {userName: "", passWord: ""},
+            methods: {
+                login: function () {
+                    debugger
+                    $.ajax({
+                        type:"post",
+                        data:vue.$data,
+                        url:"/loginVli",
+                        success:function () {
+                            alert(123123213)
+                        }
+                    })
+                }
+            }
+        }
+    )
+</script>
+</body>
+</html>

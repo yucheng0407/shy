@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="medias/css/Global.css"/>
+    <link rel="stylesheet" type="text/css" href="medias/css/plat.css"/>
+    <link rel="stylesheet" type="text/css" href="medias/css/iconFont/iconfont.css"/>
+    <script type="text/javascript" src="medias/js/baseJs/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="medias/js/baseJs/vue.js"></script>
+    <script type="text/javascript" src="medias/js/baseJs/componentVue.js"></script>
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background: #fff;
+
+        }
+    </style>
+</head>
+<body>
+<div>
+    <template id="baseTable">
+        <div style="padding: 0 30px;" :pagenum="page.pageNum=(Math.ceil(listData.length / tableSetting.limit))"
+             :pageLength="page.pageLength=listData.length">
+            <component is="baseQuery" :list-data="listData" :query-data="queryData"
+                       :query-config="queryConfig"></component>
+            <component is="baseButton" :buttons="tableSetting.buttons"></component>
+            <div style="float: right">
+                <component is="baseButton" :buttons="grid?tableButton:gridButton"></component>
+            </div>
+            <div id="tableH" style=" overflow-x:hidden;overflow-y: auto;width: 100%;">
+                <transition name="bounce">
+                <div v-if="grid" class="baseGrid">
+                    <ul class="gridUl">
+                        <li class="gridLi" @dblclick="dblclick(data)" @click="click(data)"
+                            v-for="data in tableSetting.limit?listData.slice((page.index-1)*tableSetting.limit,page.index*tableSetting.limit):listData">
+                            <div class="gridDiv">
+                                <div style="position:relative;height: 80px;display: flex;">
+                                    <i for="checkbox" class="check"
+                                       :class="{checked:data._sel}"></i>
+                                    <div class="imgBackground">
+                                        <i class="iconfont" style="font-size: 40px;display: block;"> &#xe790;</i>
+                                    </div>
+                                </div>
+                                <div class="baseForm" style="padding:5px">
+                                    <table style="padding: 5px">
+                                        <tr v-for="config in tableConfig" style="height: 20px;line-height: 20px">
+                                            <th style="width: 30%">{{config.name}}</th>
+                                            <td :title="data[config.type]">{{data[config.type]}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                </transition>
+                <transition name="bounce">
+                <div v-if="!grid" class="baseTable">
+                    <table>
+                        <colgroup>
+                            <col v-for="config in tableConfig" :width="config.width"/>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th><i for="checkbox" class="check"
+                                   :class="{checked:isAllChecked}" title="全选"
+                                   @click="allChecked"></i></th>
+                            <th v-for="config in tableConfig">{{config.name}}<span v-if="config.isSort" class="sort"><i
+                                    class="sort-edge sort-asc" :class="sortType" title="升序"
+                                    @click="asc(config.type)"></i><i
+                                    class="sort-edge sort-desc" :class="sortType" title="降序"
+                                    @click="desc(config.type)"></i></span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr @dblclick="dblclick(data)" @click="click(data)"
+                            v-for="data in tableSetting.limit?listData.slice((page.index-1)*tableSetting.limit,page.index*tableSetting.limit):listData">
+                            <td><i for="checkbox" class="check"
+                                   :class="{checked:data._sel}"></i></td>
+                            <td v-for="config in tableConfig" :title="data[config.type]">{{data[config.type]}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </transition>
+            </div>
+            <component v-if="tableSetting.limit" is="basePage" :page="page"></component>
+        </div>
+    </template>
+    <template id="baseButton">
+        <div class="baseButton" style="float: left">
+            <button v-for="button in buttons" class="button" @click="button.onClick" :class="button.type"><i
+                    style="font-size: 20px" v-if="button.icon" class="iconfont" v-html="button.icon"></i><span>{{button.name}}</span>
+            </button>
+        </div>
+    </template>
+    <template id="baseQuery">
+        <div class="baseQuery">
+            <div class="item">
+                <div v-for="(con, key) in queryConfig" class="inline">
+                    <label class="laber">{{con.name}}</label>
+                    <div class="input-block">
+                        <component :config="con.config" :model="queryData" :model-name="key"
+                                   :is="getComp(con.type)"></component>
+                    </div>
+                </div>
+                <div class="inline">
+                    <component is="baseButton" :buttons="buttons"></component>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="baseSelect">
+        <!--<select v-model="value" style="display: none" name="label">-->
+        <!--<option value="">请选择标签</option>-->
+        <!--<option v-for="dict in dicts" value="dict.code" >{{dict.name}}</option>-->
+        <!--</select>-->
+        <div class="baseSelect" style="position: relative;background-color: #fff">
+            <input @blur="blur?display=true:display;" @click="display=!display"
+                   style="cursor: pointer;position:relative;z-index:1;background-color: #fff0" type="text"
+                   placeholder="请选择标签" :value="model[modelName]" readonly="" class="input" name=""><span
+                style="position: absolute;right: 15px;top: 6px;" class="sort"><i
+                class="sort-edge sort-desc" style="top:unset;bottom: 2px;border-width: 6px;"
+                :class="{trans:!display}"></i></span>
+            <ul @mouseover="blur=false" @mouseout="blur=true" :style="{display: display?'none':'block'}">
+                <li :class="{this:!model[modelName]}" @click="model[modelName]='';display=true">
+                    请选择标签
+                </li>
+                <li :class="{this:model[modelName]==dict.code}" v-for="dict in config.dictCode"
+                    @click="model[modelName]=dict.code;display=true">{{dict.name}}
+                </li>
+            </ul>
+        </div>
+    </template>
+    <template id="baseInput">
+        <!--<select v-model="value" style="display: none" name="label">-->
+        <!--<option value="">请选择标签</option>-->
+        <!--<option v-for="dict in dicts" value="dict.code" >{{dict.name}}</option>-->
+        <!--</select>-->
+        <div class="baseInput">
+            <input v-model="model[modelName]" type="text" name="author" placeholder="请输入" autocomplete="off"
+                   class="input">
+        </div>
+    </template>
+    <div id="page">
+        <component ref="table" is="baseTable" :query-data="queryData" :query-config="queryConfig"
+                   :table-config="tableConfig" :list-data="listData"
+                   :table-setting="tableSetting"></component>
+    </div>
+</div>
+<script>
+    Vue.component("baseButton", {
+        props: ['buttons'],
+        template: '#baseButton'
+    })
+    Vue.component("baseQuery", {
+        props: ["queryData", "queryConfig", "listData"],
+        template: '#baseQuery',
+        methods: {
+            getComp: function (type) {
+                var comp;
+                switch (type) {
+                    case "dict": {
+                        comp = "baseSelect";
+                        break
+                    }
+                    default: {
+                        comp = "baseInput";
+                        break
+                    }
+                }
+                return comp;
+            }
+        },
+        data: function () {
+            return {
+                buttons: [{
+                    name: "搜索", icon: "&#xe77c;", onClick: $.proxy(function () {
+                        var baseQuery = this;
+                        var table = this.listData.filter(function (a) {
+                            for (var key in baseQuery.queryData) {
+                                if (a[key] && a[key] === baseQuery.queryData[key]) {
+                                    return true;
+                                }
+
+                            }
+                            return false
+                        })
+                        this.listData.splice(0, this.listData.length);
+//                        this.listData.push(table[0])
+//                     Array.prototype.splice.apply(this.listData, [0, 10]);
+                        Array.prototype.push.apply(this.listData, table);
+                    }, this)
+                }]
+            }
+        }
+
+    })
+    /**
+     * 翻页组件
+     * page:{当前页 index:Number,页数 pageNum:Number}
+     */
+    Vue.component("baseTable", {
+        props: ['listData', 'tableConfig', 'tableSetting', 'queryData', 'queryConfig'],
+        template: '#baseTable',
+        data: function () {
+            return {
+                sortType: null,
+                grid: false,
+                isAllChecked: false,
+                page: {
+                    index: 1,
+                    pageLength: this.listData.length,
+                    pageNum: (Math.ceil(this.listData.length / this.tableSetting.limit))
+                },
+                gridButton: [{
+                    name: "卡片", icon: "&#xe608;", onClick: $.proxy(function () {
+                        this.grid = !this.grid;
+                    }, this)
+                }],
+                tableButton: [{
+                    name: "列表", icon: "&#xe62b;", onClick: $.proxy(function () {
+                        this.grid = !this.grid;
+                    }, this)
+                }]
+            }
+        },
+        mounted: function () {
+            var h=$("body").height()-($(".basePage").outerHeight()+$(".baseQuery").outerHeight()+$(".baseButton").outerHeight());
+            $("#tableH").css("max-height",h-15)
+        },
+        methods: {
+            allChecked: function () {
+                this.isAllChecked = !this.isAllChecked;
+                for (var i = this.listData.length - 1; i >= 0; i--) {
+                    this.isAllChecked ? Vue.set(this.listData[i], '_sel', true) : Vue.set(this.listData[i], '_sel', false);
+                }
+            },
+            asc: function (type) {
+                this.listData.sort(function (a, b) {
+                    return a[type] - b[type]
+                })
+                this.page.index = 1;
+                this.sortType = "sort-asced";
+            },
+            desc: function (type) {
+                this.listData.sort(function (a, b) {
+                    return b[type] - a[type]
+                })
+                this.page.index = 1;
+                this.sortType = "sort-desced";
+            },
+            delSel: function () {
+                for (var i = this.listData.length - 1; i >= 0; i--) {
+                    if (this.listData[i]._sel) {
+                        this.listData.splice(i, 1);
+                    }
+                }
+            },
+            getSel: function () {
+                return this.listData.filter(function (d) {
+                    return d._sel;
+                })
+            },
+            dblclick: function (data) {
+                debugger
+            },
+            click: function (data) {
+                if (data._sel) {//
+                    Vue.set(data, '_sel', false);
+                    this.isAllChecked = false;
+                    //   data._sel=null;
+                } else {
+                    Vue.set(data, '_sel', true);
+                    //      data._sel=true;
+                }
+            }
+        }
+    });
+
+    Vue.component("baseInput", {
+        props: ['config', 'model', 'modelName'],
+        template: '#baseInput'
+    });
+    Vue.component("baseSelect", {
+        props: ['config', 'model', 'modelName'],
+        data: function () {
+            return {
+                blur: true,
+                display: true
+            }
+        },
+        template: '#baseSelect'
+    });
+    var list = [];
+    for (var i = 0; i < 50; i++) {
+        list.push({
+            a: i + 1,
+            b: 2,
+            c: '3dasdsadsaasdsadsadsadddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
+            d: 4
+        })
+    }
+    var i = 50;
+    var vue = new Vue({
+        el: "#page",
+        data: {
+            tableSetting: {
+                limit: 20, buttons: [{
+                    name: "新增", icon: "&#xe6e2;", onClick: function () {
+                        vue.$refs.table.getSel();
+                        list.push({a: i = ++i, b: 2, c: 3, d: 4})
+                    }
+                }, {
+                    name: "删除", type: "danger", icon: "&#xe70a;", onClick: function () {
+                        vue.$refs.table.delSel()
+                    }
+                }]
+            },
+            listData: list,
+            tableConfig: [{name: 1111, type: 'a', width: '50', isSort: true}, {name: 222, type: 'b'}, {
+                name: 3,
+                type: 'c'
+            }, {
+                name: 4,
+                type: 'd'
+            }],
+            queryData: {a: '', b: ''},
+            queryConfig: {
+                a: {  //值班开始时间
+//                    rules: {checkSave: ["notNull"]},
+                    name: "a",
+                    type: "dict",
+                    config: {
+                        dictCode: [{name: 1, code: 1}, {name: 2, code: 2}, {name: 3, code: 3}]
+                    }
+                },
+                b: {  //值班开始时间
+//                    rules: {checkSave: ["notNull"]},
+                    name: "b"
+                }
+            }
+
+        }
+    })
+</script>
+
+</body>
+</html>
