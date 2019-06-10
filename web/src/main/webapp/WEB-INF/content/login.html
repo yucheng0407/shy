@@ -66,11 +66,13 @@
                 login: function () {
                     debugger
                     $.ajax({
-                        type:"post",
-                        data:vue.$data,
-                        url:"/loginVli",
-                        success:function () {
-                            alert(123123213)
+                        type: "post",
+                        data: vue.$data,
+                        url: YC.handleUrl("/loginVli"),
+                        success: function (e) {
+                            if (e.msg) {
+                                alert(e.msg)
+                            }
                         }
                     })
                 }

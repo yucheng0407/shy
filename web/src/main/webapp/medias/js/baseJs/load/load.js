@@ -4,7 +4,11 @@
 var YC =
     {
         handleUrl: function (url) {
-            return contentType + url;
+            //获取路径
+            var pathName = window.document.location.pathname;
+            //截取，得到项目名称
+            var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+            return projectName + url;
         }
     }
 var _loadjs = {};
@@ -54,12 +58,14 @@ var loadJs = function (_option) {
     console.log("初始化js");
     _loadModulesJs(_option.modules);
 };
+
 function _loadMainJs() {
     for (var js in jsConfig.mainJs) {
-        findDep(js,"mainJs")
+        findDep(js, "mainJs")
     }
 
 }
+
 function _loadModulesJs(modules) {
     if (modules) {
         for (var i in modules) {
@@ -67,28 +73,29 @@ function _loadModulesJs(modules) {
             if (!modules[i].indexOf("/")) {
                 _writeJs(js)
             } else {
-                findDep(js,"js")
+                findDep(js, "js")
             }
         }
     }
 }
-function findDep(js,type) {
+
+function findDep(js, type) {
     var depJs = jsConfig.shim[js];
     if (!depJs) {
-        isLoad(js,type);
+        isLoad(js, type);
         return;
     }//不存在依赖
     for (var dep in depJs.deps) {
-        findDep(depJs.deps[dep],type)
+        findDep(depJs.deps[dep], type)
     }
-    isLoad(js,type);
+    isLoad(js, type);
 }
 
 function _writeJs(_js) {
     document.write('<script type="text/javascript" src="' + YC.handleUrl(_js) + '"></script>');
 }
 
-function isLoad(depJs,type) {
+function isLoad(depJs, type) {
     if (!_loadjs[depJs]) {
         _writeJs(jsConfig[type][depJs]);
         _loadjs[depJs] = true;
@@ -101,6 +108,7 @@ function isLoad(depJs,type) {
  */
 var loadCss = function (_option) {
     console.log("初始化css");
+
     function _writeCss(_css1) {
         document.write('<link rel="stylesheet" href="' + _css1 + '"/>');
     }

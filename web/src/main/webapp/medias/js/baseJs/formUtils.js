@@ -12,6 +12,8 @@ var isIE6 = isIE && !window.XMLHttpRequest;
 var isIE8 = isIE && !!document.documentMode;
 var isIE7 = isIE && !isIE6 && !isIE8;
 
+
+
 // var _ajax=$.ajax;
 //重写jquery的ajax方法
 // $.ajax=function(opt){
@@ -61,6 +63,7 @@ $.get = function (url, data, success, error) {
 
     _get(url, data, success, error);
 };
+
 /**********************************************
  * 布局js控制
  **********************************************/
@@ -71,6 +74,7 @@ function resizeForm() {
         $(".Boxform").height($(window).height() - $(".title2").outerHeight() - $(".WindowMenu").outerHeight());
     })
 }
+
 //初始化列表样式
 function resizeTable() {
     window.setTimeout(function () {
@@ -82,6 +86,7 @@ function resizeTable() {
         $(".BoxGenerallist").width($("bage-box").width());
     })
 }
+
 //载入中提示开启
 function openLoading() {
     var height = Math.floor($(window).height() / 2 - 10);
@@ -90,6 +95,7 @@ function openLoading() {
         "<span>数据加载中...</span>" +
         "</div>");
 }
+
 //载入中提示关闭
 function closeLoading() {
     $("#loadingGif").remove();
@@ -271,6 +277,7 @@ function matchChecked(collection) {
         })
     }
 }
+
 /*************************
  * 非空字符串判断
  * @param str
@@ -282,6 +289,7 @@ function isNotNullStr(str) {
     }
     return false;
 }
+
 /*************************
  * 非空元素判断
  * @param str
@@ -305,6 +313,7 @@ function getDictData(data) {
 function getDictItem(data) {
     return {no: data.no, name: data.name, remark: data.remark, parentNo: data.parentNo}
 }
+
 /**
  * 实现js缓存的方法
  * @param jspath 文件名称 对应dictType
@@ -716,6 +725,7 @@ function getDateRex(length) {
         return "%H:%m:%s";
     }
 }
+
 //计算两个日期的时间差
 function compareDate(startDate, endDate) {
     if (isNotNull(startDate) && isNotNull(endDate)) {
@@ -727,6 +737,7 @@ function compareDate(startDate, endDate) {
         }
     }
 }
+
 //判断对象不是null也不是空字符串
 function isNotNull(str) {
     return str != null && str != '';
@@ -736,6 +747,7 @@ function isNotNull(str) {
 function encode(val) {
     return encodeURI(encodeURI(val));
 }
+
 //汉字解码
 function decode(val) {
     return decodeURI(decodeURI(val));
@@ -763,6 +775,7 @@ function replaceParamVal(paramName, replaceWith) {
     var nUrl = oUrl.replace(re, paramName + '=' + replaceWith);
     this.location = nUrl;
 }
+
 /*****************************************************************
  获取页面传参工具方法"2015-11-16 13:13:13".match(/^(d{4})(-)(d{2})(-)(d{2}) (d{2}):(d{2}):(d{2})$/)
  *****************************************************************/
@@ -776,7 +789,7 @@ function replaceParamVal(paramName, replaceWith) {
 function GetQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
     var r = window.location.search.substr(1).match(reg);
-    if (r != null)return unescape(r[2]);
+    if (r != null) return unescape(r[2]);
     return null;
 }
 
@@ -785,13 +798,13 @@ function GetParentQueryString(name) {
         var query = window.location.search;
         if (query.indexOf("&") > -1) {
             query = query.substr(query.indexOf('&') + 1, query.length);
-            if (query != null)return unescape(query);
+            if (query != null) return unescape(query);
         }
         return null;
     } else {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         var r = document.referrer.substr(1).match(reg);
-        if (r != null)return unescape(r[2]);
+        if (r != null) return unescape(r[2]);
         return null;
     }
 }
@@ -1007,6 +1020,7 @@ function setCookie(c_name, value, expiredays) {
     document.cookie = c_name + "=" + escape(value) +
         ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString())
 }
+
 /**
  * 获取cookie的方法
  * @param c_name
@@ -1035,6 +1049,7 @@ function loadAuthority() {
         setCookie("authority", JSON.stringify(data));
     });
 }
+
 /**
  * 获取权限数据：需要用权限的模块在引用main.js后调用该无参方法，
  * @returns {*}返回JSON格式的权限数据。
@@ -1559,7 +1574,7 @@ if (top.hasLayerManager) {
         }
         if (selfPage || selfPage.parentName) {
             parentPage = findWinPage(selfPage.parentName);
-            if (parentPage)return findPageWin(parentPage);
+            if (parentPage) return findPageWin(parentPage);
         } else {
             return;
         }
@@ -1576,7 +1591,7 @@ if (top.hasLayerManager) {
 
     //弹出层内部调用接口，处理关闭后置
     window.closeLayerWin = function (name) {
-        if (!name)return;
+        if (!name) return;
         var upperestPage = findWinPage(name);
 
         while (upperestPage.type == "frame") {
@@ -1794,9 +1809,9 @@ if (top.hasLayerManager) {
             maxmin: true,
             content: YC.handleUrl(url),
             success: function (layero, index) {
-                var iframeWin =  top.frames[layero.find('iframe')[0]['name']];
-                iframeWin.data=param;
-                iframeWin.parentWin=win;
+                var iframeWin = top.frames[layero.find('iframe')[0]['name']];
+                iframeWin.data = param;
+                iframeWin.parentWin = win;
                 if (callBacks && typeof(callBacks.success) == "function") {
                     callBacks.success(iframeWin);
                 }
@@ -2218,11 +2233,12 @@ function IEType() {
         }
     }
 }
+
 function openBaiduMap(opt) {
     var callBack =
         {
             success: function (layero, index) {
-                var iframeWin =  top.frames[layero.find('iframe')[0]['name']];
+                var iframeWin = top.frames[layero.find('iframe')[0]['name']];
                 if (opt) {
                     iframeWin.data = opt;
                 } else iframeWin.data = {};

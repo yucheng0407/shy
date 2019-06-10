@@ -29,7 +29,7 @@ public class LoginController extends BaseController {
 //    public AjaxReturn login(String username, String password, String captcha, boolean isRememberMe)throws IOException {
 //        return null;
 //    }
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/login")
     public String login() {
         return "login";
     }

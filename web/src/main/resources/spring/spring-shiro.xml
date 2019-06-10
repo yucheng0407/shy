@@ -77,6 +77,7 @@
     <!-- 会话管理器使用用于web 环境的DefaultWebSessionManager -->
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
         <!-- 设置全局会话超时时间，默认30分钟(1800000) -->
+        <property name="sessionIdUrlRewritingEnabled" value="false" />
         <property name="globalSessionTimeout" value="1800000"/>
         <property name="deleteInvalidSessions" value="true"/>
         <property name="sessionValidationSchedulerEnabled" value="true"/>
@@ -117,8 +118,7 @@
                 /statics/**=anon
                 /js/**=anon
                 /login=anon
-                /index=anon
-                /login/captcha=anon
+                /loginVli=anon
                 /**=rememberAuthFilter
             </value>
         </property>
