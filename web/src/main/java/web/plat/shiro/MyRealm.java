@@ -1,4 +1,6 @@
 package web.plat.shiro;
+
+import daomain.plat.User;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -8,6 +10,8 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import service.plat.UserService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +19,7 @@ import java.util.Map;
 /**
  * 类的功能描述.
  * shiro 认证
+ *
  * @Auther hxy
  * @Date 2017/4/27
  */
@@ -23,6 +28,8 @@ public class MyRealm extends AuthorizingRealm {
 
     private static final Logger logger = LoggerFactory.getLogger(MyRealm.class);
 
+    @Autowired
+    UserService userService;
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 //        UserEntity user = (UserEntity) principals.getPrimaryPrincipal();
@@ -52,9 +59,10 @@ public class MyRealm extends AuthorizingRealm {
 //        }
         return info;
     }
+
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        String userLoginName= (String) token.getPrincipal();
-//        UserEntity user = userService.queryByLoginName(userLoginName);
+        String userLoginName = (String) token.getPrincipal();
+        User user = userService.queryByLoginName(userLoginName);
 //        if(user == null){
 //            throw new AuthenticationException("帐号密码错误");
 //        }
@@ -67,16 +75,14 @@ public class MyRealm extends AuthorizingRealm {
 //        List<String> bapidList= userService.queryBaidByUserIdArray(user.getId());
 //        user.setBapidList(bapidList);
 //        user.setBaidList(baidList);
-        Map user=new HashMap();
-        user.put("name","admin");
-        user.put("passWord","111");
 
-        SimpleAuthenticationInfo sainfo=new SimpleAuthenticationInfo(user,ShiroUtils.DecodeSalt(user.get("passWord").toString()) ,getName());
+        SimpleAuthenticationInfo sainfo = new SimpleAuthenticationInfo(user, ShiroUtils.DecodeSalt(user.getPassWord()), getName());
         return sainfo;
     }
 
     /**
      * MD5加密
+     *
      * @param credentialsMatcher
      */
     @Override

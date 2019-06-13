@@ -72,6 +72,8 @@
                         success: function (e) {
                             if (e.msg) {
                                 alert(e.msg)
+                            }else {
+                                window.location.href=YC.handleUrl("/index");
                             }
                         }
                     })

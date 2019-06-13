@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.plat.User.UserDao">
+
+
+    <resultMap type="daomain.plat.User" id="userMap">
+        <result property="id" column="ID"/>
+        <result property="userName" column="USERNAME"/>
+        <result property="loginName" column="LOGINNAME"/>
+        <result property="passWord" column="PASSWORD"/>
+		<result property="cjsj" column="CJSJ"/>
+        <result property="zt" column="ZT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+		id,
+		userName,
+		loginName,
+		passWord,
+		cjsj,
+		zt
+    </sql>
+
+	<select id="queryObject" resultType="dao.plat.User.UserDao" resultMap="userMap">
+		select
+		*
+		from sys_user s
+		where id = #{value}
+	</select>
+    <select id="queryByLoginName" resultType="dao.plat.User.UserDao" resultMap="userMap">
+        select
+        *
+        from sys_user
+        where LOGINNAME = #{0}
+    </select>
+</mapper>
