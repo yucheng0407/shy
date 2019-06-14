@@ -24,11 +24,6 @@ public class LoginController extends BaseController {
     /**
      * 登录
      */
-//    @ResponseBody
-//    @RequestMapping(value = "/login/login", method = RequestMethod.POST)
-//    public AjaxReturn login(String username, String password, String captcha, boolean isRememberMe)throws IOException {
-//        return null;
-//    }
     @RequestMapping(value = "/login")
     public String login() {
         return "login";

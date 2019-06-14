@@ -11,6 +11,13 @@
         <module>daomain</module>
         <module>web</module>
     </modules>
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
     <dependencies>
         <!-- 单元测试 -->
         <dependency>
