@@ -16,7 +16,7 @@ var data = [{
 }, {
     name: "后台管理",
     icon: "&#xe758;",
-    subMenus: [{name: "用户管理", icon: "&#xe73d;", comp: "menucomp", url: "/index/users"}],
+    subMenus: [{name: "用户管理", icon: "&#xe73d;", comp: "menucomp", url: "/index/user"}],
     comp: "menucomp"
 }, {
     name: "主页3",

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script type="text/javascript" src="${rq.contextPath}/medias/js/baseJs/load/load.js"></script>
+    <script type="text/javascript">
+        loadCss()
+    </script>
     <style type="text/css">
         html, body {
             height: 100%;
@@ -11,9 +14,6 @@
             overflow: hidden;
         }
     </style>
-    <script type="text/javascript">
-        loadCss()
-    </script>
 </head>
 <body>
 <div id="index">
@@ -71,11 +71,11 @@
                 </li>
             </ul>
         </div>
-        <iframe class="menuFrame" style="border-right: 1px solid #d8d8d8;border-left: 1px solid #d8d8d8;" v-show="curframe==frame" v-for="frame in frames" name="index"
+        <iframe class="menuFrame" style="border-right: 1px solid #d8d8d8;border-bottom: 1px solid #d8d8d8;border-left: 1px solid #d8d8d8;" v-show="curframe==frame" v-for="frame in frames" name="index"
                 frameborder="0" width="100%"
                 :height="height"
                 scrolling="auto"
-                :src="frame.url"></iframe>
+                :src="'${rq.contextPath}/'+frame.url"></iframe>
     </div>
 </template>
 <script>

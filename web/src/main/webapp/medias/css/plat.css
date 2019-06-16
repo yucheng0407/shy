@@ -431,6 +431,7 @@ i {
     background-color: #f2f2f2;
     text-overflow: ellipsis;
     overflow: hidden;
+    text-align: center;
 }
 
 .baseForm table td {

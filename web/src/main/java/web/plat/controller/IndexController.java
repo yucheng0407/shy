@@ -21,9 +21,9 @@ import web.plat.shiro.ShiroUtils;
 @Controller
 @RequestMapping(value = "/index")
 public class IndexController extends BaseController {
-    @RequestMapping(value = "/users")
+    @RequestMapping(value = "/user")
     public String login() {
-        return "plat/users";
+        return "plat/user";
     }
 
     @RequestMapping(value = "/index")

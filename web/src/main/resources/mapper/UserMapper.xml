@@ -28,6 +28,26 @@
 		from sys_user s
 		where id = #{value}
 	</select>
+    <select id="queryList" resultType="dao.plat.User.UserDao" resultMap="userMap">
+        select
+        *
+        from sys_user s
+        WHERE 1=1
+        <if test="USERNAME != null and USERNAME.trim() != ''" >
+            AND USERNAME=#{USERNAME}
+        </if>
+        <!--<choose>-->
+            <!--<when test="sidx != null and sidx.trim() != ''">-->
+                <!--order by ${sidx} ${order}-->
+            <!--</when>-->
+            <!--<otherwise>-->
+                <!--order by id desc-->
+            <!--</otherwise>-->
+        <!--</choose>-->
+        <!--<if test="offset != null and limit != null">-->
+            <!--limit #{offset}, #{limit}-->
+        <!--</if>-->
+    </select>
     <select id="queryByLoginName" resultType="dao.plat.User.UserDao" resultMap="userMap">
         select
         *
