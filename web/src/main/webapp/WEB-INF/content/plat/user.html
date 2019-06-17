@@ -3,91 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="medias/css/Global.css"/>
-    <link rel="stylesheet" type="text/css" href="medias/css/plat.css"/>
-    <link rel="stylesheet" type="text/css" href="medias/css/iconFont/iconfont.css"/>
-    <script type="text/javascript" src="medias/js/baseJs/jquery-1.8.3.js"></script>
-    <script type="text/javascript" src="medias/js/baseJs/vue.js"></script>
-    <script type="text/javascript" src="medias/js/baseJs/componentVue.js"></script>
+    <script type="text/javascript" src="${rq.contextPath}/medias/js/baseJs/load/load.js"></script>
+    <script type="text/javascript">
+        loadCss()
+    </script>
     <style type="text/css">
         html, body {
             height: 100%;
             width: 100%;
             overflow: hidden;
             background: #fff;
-
         }
     </style>
 </head>
 <body>
 <div>
     <template id="baseTable">
-        <div style="padding: 0 30px;" :pagenum="page.pageNum=(Math.ceil(listData.length / tableSetting.limit))"
+        <div style="padding: 0 30px;" :pagenum="page.pageNum=(Math.ceil(listData.length / listSetting.limit))"
              :pageLength="page.pageLength=listData.length">
             <component is="baseQuery" :list-data="listData" :query-data="queryData"
                        :query-config="queryConfig"></component>
-            <component is="baseButton" :buttons="tableSetting.buttons"></component>
+            <component is="baseButton" :buttons="listSetting.buttons"></component>
             <div style="float: right">
                 <component is="baseButton" :buttons="grid?tableButton:gridButton"></component>
             </div>
             <div id="tableH" style=" overflow-x:hidden;overflow-y: auto;width: 100%;">
                 <transition name="bounce">
-                <div v-if="grid" class="baseGrid">
-                    <ul class="gridUl">
-                        <li class="gridLi" @dblclick="dblclick(data)" @click="click(data)"
-                            v-for="data in tableSetting.limit?listData.slice((page.index-1)*tableSetting.limit,page.index*tableSetting.limit):listData">
-                            <div class="gridDiv">
-                                <div style="position:relative;height: 80px;display: flex;">
-                                    <i for="checkbox" class="check"
-                                       :class="{checked:data._sel}"></i>
-                                    <div class="imgBackground">
-                                        <i class="iconfont" style="font-size: 40px;display: block;"> &#xe790;</i>
+                    <div v-if="grid" class="baseGrid">
+                        <ul v-if="listData&&listData.length" class="gridUl">
+                            <li class="gridLi" @dblclick="dblclick(data)" @click="click(data)"
+                                v-for="data in listSetting.limit?listData.slice((page.index-1)*listSetting.limit,page.index*listSetting.limit):listData">
+                                <div class="gridDiv">
+                                    <div style="position:relative;height: 80px;display: flex;">
+                                        <i for="checkbox" class="check"
+                                           :class="{checked:data._sel}"></i>
+                                        <div class="imgBackground">
+                                            <i class="iconfont" style="font-size: 40px;display: block;"> &#xe790;</i>
+                                        </div>
+                                    </div>
+                                    <div class="baseForm" style="padding:5px">
+                                        <table style="padding: 5px">
+                                            <tr v-if="config.isGrid" v-for="config in tableConfig"
+                                                style="height: 20px;line-height: 20px">
+                                                <th style="width: 30%">{{config.name}}</th>
+                                                <td :title="data[config.type]">{{data[config.type]}}</td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
-                                <div class="baseForm" style="padding:5px">
-                                    <table style="padding: 5px">
-                                        <tr v-for="config in tableConfig" style="height: 20px;line-height: 20px">
-                                            <th style="width: 30%">{{config.name}}</th>
-                                            <td :title="data[config.type]">{{data[config.type]}}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </transition>
                 <transition name="bounce">
-                <div v-if="!grid" class="baseTable">
-                    <table>
-                        <colgroup>
-                            <col v-for="config in tableConfig" :width="config.width"/>
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th><i for="checkbox" class="check"
-                                   :class="{checked:isAllChecked}" title="全选"
-                                   @click="allChecked"></i></th>
-                            <th v-for="config in tableConfig">{{config.name}}<span v-if="config.isSort" class="sort"><i
-                                    class="sort-edge sort-asc" :class="sortType" title="升序"
-                                    @click="asc(config.type)"></i><i
-                                    class="sort-edge sort-desc" :class="sortType" title="降序"
-                                    @click="desc(config.type)"></i></span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr @dblclick="dblclick(data)" @click="click(data)"
-                            v-for="data in tableSetting.limit?listData.slice((page.index-1)*tableSetting.limit,page.index*tableSetting.limit):listData">
-                            <td><i for="checkbox" class="check"
-                                   :class="{checked:data._sel}"></i></td>
-                            <td v-for="config in tableConfig" :title="data[config.type]">{{data[config.type]}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    <div v-if="!grid" class="baseTable">
+                        <table>
+                            <colgroup>
+                                <col v-for="config in tableConfig" :width="config.width"/>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th><i for="checkbox" class="check"
+                                       :class="{checked:isAllChecked}" title="全选"
+                                       @click="allChecked"></i></th>
+                                <th v-for="config in tableConfig">{{config.name}}<span v-if="config.isSort"
+                                                                                       class="sort"><i
+                                        class="sort-edge sort-asc" :class="sortType" title="升序"
+                                        @click="asc(config.type)"></i><i
+                                        class="sort-edge sort-desc" :class="sortType" title="降序"
+                                        @click="desc(config.type)"></i></span></th>
+                            </tr>
+                            </thead>
+                            <tbody v-if="listData&&listData.length">
+                            <tr @dblclick="dblclick(data)" @click="click(data)"
+                                v-for="data in listSetting.limit?listData.slice((page.index-1)*listSetting.limit,page.index*listSetting.limit):listData">
+                                <td><i for="checkbox" class="check"
+                                       :class="{checked:data._sel}"></i></td>
+                                <td v-for="config in tableConfig" :title="data[config.type]">{{renderer(data,config)}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </transition>
             </div>
-            <component v-if="tableSetting.limit" is="basePage" :page="page"></component>
+            <component v-if="listSetting.limit" is="basePage" :page="page"></component>
         </div>
     </template>
     <template id="baseButton">
@@ -147,8 +147,8 @@
     </template>
     <div id="page">
         <component ref="table" is="baseTable" :query-data="queryData" :query-config="queryConfig"
-                   :table-config="tableConfig" :list-data="listData"
-                   :table-setting="tableSetting"></component>
+                   :table-config="tableConfig" :list-data.sync="listData"
+                   :list-setting="listSetting"></component>
     </div>
 </div>
 <script>
@@ -204,17 +204,18 @@
      * page:{当前页 index:Number,页数 pageNum:Number}
      */
     Vue.component("baseTable", {
-        props: ['listData', 'tableConfig', 'tableSetting', 'queryData', 'queryConfig'],
+        props: ['listData', 'tableConfig', 'listSetting', 'queryData', 'queryConfig'],
         template: '#baseTable',
         data: function () {
             return {
+                url: "",
                 sortType: null,
                 grid: false,
                 isAllChecked: false,
                 page: {
                     index: 1,
                     pageLength: this.listData.length,
-                    pageNum: (Math.ceil(this.listData.length / this.tableSetting.limit))
+                    pageNum: (Math.ceil(this.listData.length / this.listSetting.limit))
                 },
                 gridButton: [{
                     name: "卡片", icon: "&#xe608;", onClick: $.proxy(function () {
@@ -228,11 +229,46 @@
                 }]
             }
         },
+        created: function () {
+            if (typeof this.listData === 'string') {
+                this.url = this.listData;
+                this.getListData()
+            }
+        },
         mounted: function () {
-            var h=$("body").height()-($(".basePage").outerHeight()+$(".baseQuery").outerHeight()+$(".baseButton").outerHeight());
-            $("#tableH").css("max-height",h-15)
+            var h = $("body").height() - ($(".basePage").outerHeight() + $(".baseQuery").outerHeight() + $(".baseButton").outerHeight());
+            $("#tableH").css("max-height", h - 15)
         },
         methods: {
+            getListData: function () {
+                var _vue = this;
+                $.ajax({
+                    type: "post",
+                    data: {map: JSON.stringify(this.queryData)},
+                    async: false,
+                    url: YC.handleUrl(this.url),
+                    success: function (e) {
+//                        _vue.listData=e.data
+//                        this.$emit("update:listData", []);
+                        _vue.$emit("update:listData", e.data || []);
+                    }
+                })
+            },
+            renderer: function (data, config) {
+                console.log(123213213123)
+                switch (config.renderer) {
+                    case "date": {
+                        var date = new Date(data[config.type]);
+                        return date.Format("yyyy-MM-dd HH:mm:ss");
+                    }
+                    case "String": {
+                        return data[config.type];
+                    }
+                    default: {
+                        return config.renderer(data, data[config.type]);
+                    }
+                }
+            },
             allChecked: function () {
                 this.isAllChecked = !this.isAllChecked;
                 for (var i = this.listData.length - 1; i >= 0; i--) {
@@ -308,7 +344,7 @@
     var vue = new Vue({
         el: "#page",
         data: {
-            tableSetting: {
+            listSetting: {
                 limit: 20, buttons: [{
                     name: "新增", icon: "&#xe6e2;", onClick: function () {
                         vue.$refs.table.getSel();
@@ -320,27 +356,36 @@
                     }
                 }]
             },
-            listData: list,
-            tableConfig: [{name: 1111, type: 'a', width: '50', isSort: true}, {name: 222, type: 'b'}, {
-                name: 3,
-                type: 'c'
+            listData: "/user/getUserList",
+            tableConfig: [{
+                name: '姓名',
+                type: 'userName',
+                width: '50',
+                isSort: true,
+                isGrid: true,
+                renderer: "String"
+            }, {name: '账号', type: 'loginName', renderer: "String"}, {
+                name: '时间',
+                type: 'cjsj',
+                renderer: "date"
             }, {
-                name: 4,
-                type: 'd'
+                name: '状态',
+                type: 'zt',
+                renderer: "String"
             }],
-            queryData: {a: '', b: ''},
+            queryData: {userName: ''},
             queryConfig: {
-                a: {  //值班开始时间
+//                a: {  //值班开始时间
+////                    rules: {checkSave: ["notNull"]},
+//                    name: "a",
+//                    type: "dict",
+//                    config: {
+//                        dictCode: [{name: 1, code: 1}, {name: 2, code: 2}, {name: 3, code: 3}]
+//                    }
+//                },
+                userName: {  //值班开始时间
 //                    rules: {checkSave: ["notNull"]},
-                    name: "a",
-                    type: "dict",
-                    config: {
-                        dictCode: [{name: 1, code: 1}, {name: 2, code: 2}, {name: 3, code: 3}]
-                    }
-                },
-                b: {  //值班开始时间
-//                    rules: {checkSave: ["notNull"]},
-                    name: "b"
+                    name: "姓名"
                 }
             }
 
